@@ -33,6 +33,7 @@ $( document ).ready(function() {
         else if (val == 'Currency') $clone = $currencySelect.clone();
         else if (val == 'LootTable') $clone = $tableSelect.clone();
         else if (val == 'Raffle') $clone = $raffleSelect.clone();
+        else if (val == 'Border') $border = $currencySelect.clone();
 
         $cell.html('');
         $cell.append($clone);
@@ -49,7 +50,7 @@ $( document ).ready(function() {
             else if (val == 'Currency') $clone = $currencySelect.clone();
             else if (val == 'LootTable') $clone = $tableSelect.clone();
             else if (val == 'Raffle') $clone = $raffleSelect.clone();
-            else if (val == 'Border') $border = $currencySelect.clone();
+            else if (val == 'Border') $clone = $borderSelect.clone();
 
             $cell.html('');
             $cell.append($clone);

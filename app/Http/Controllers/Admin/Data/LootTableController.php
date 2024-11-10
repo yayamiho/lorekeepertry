@@ -13,7 +13,8 @@ use App\Models\Pet\Pet;
 use App\Services\LootService;
 use Illuminate\Http\Request;
 
-class LootTableController extends Controller {
+class LootTableController extends Controller
+{
     /*
     |--------------------------------------------------------------------------
     | Admin / Loot Table Controller
@@ -28,7 +29,8 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getIndex() {
+    public function getIndex()
+    {
         return view('admin.loot_tables.loot_tables', [
             'tables' => LootTable::paginate(20),
         ]);
@@ -39,20 +41,21 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getCreateLootTable() {
+    public function getCreateLootTable()
+    {
         $rarities = Item::whereNotNull('data')->get()->pluck('rarity')->unique()->toArray();
         sort($rarities);
 
         return view('admin.loot_tables.create_edit_loot_table', [
-            'table'      => new LootTable,
-            'items'      => Item::orderBy('name')->pluck('name', 'id'),
-            'award'      => Award::Item::orderBy('name')->pluck('name', 'id'),
-            'pets'       => Pet::orderBy('name')->pluck('name', 'id'),
-            'border'       => Border::orderBy('name')->pluck('name', 'id'),
+            'table' => new LootTable,
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'award' => Award::Item::orderBy('name')->pluck('name', 'id'),
+            'pets' => Pet::orderBy('name')->pluck('name', 'id'),
+            'borders' => Border::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
-            'rarities'   => array_filter($rarities),
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'rarities' => array_filter($rarities),
         ]);
     }
 
@@ -63,7 +66,8 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getEditLootTable($id) {
+    public function getEditLootTable($id)
+    {
         $table = LootTable::find($id);
         if (!$table) {
             abort(404);
@@ -76,12 +80,12 @@ class LootTableController extends Controller {
             'table' => $table,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'awards' => Award::orderBy('name')->pluck('name', 'id'),
-            'pets'       => Pet::orderBy('name')->pluck('name', 'id'),
-            'border'       => Border::orderBy('name')->pluck('name', 'id'),
+            'pets' => Pet::orderBy('name')->pluck('name', 'id'),
+            'borders' => Border::orderBy('name')->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('sort', 'DESC')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'tables'     => LootTable::orderBy('name')->pluck('name', 'id'),
-            'rarities'   => array_filter($rarities),
+            'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
+            'rarities' => array_filter($rarities),
         ]);
     }
 
@@ -93,18 +97,25 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCreateEditLootTable(Request $request, LootService $service, $id = null) {
+    public function postCreateEditLootTable(Request $request, LootService $service, $id = null)
+    {
         $id ? $request->validate(LootTable::$updateRules) : $request->validate(LootTable::$createRules);
         $data = $request->only([
-            'name', 'display_name', 'rewardable_type', 'rewardable_id', 'quantity', 'weight',
-            'criteria', 'rarity',
+            'name',
+            'display_name',
+            'rewardable_type',
+            'rewardable_id',
+            'quantity',
+            'weight',
+            'criteria',
+            'rarity',
         ]);
         if ($id && $service->updateLootTable(LootTable::find($id), $data)) {
             flash('Loot table updated successfully.')->success();
         } elseif (!$id && $table = $service->createLootTable($data)) {
             flash('Loot table created successfully.')->success();
 
-            return redirect()->to('admin/data/loot-tables/edit/'.$table->id);
+            return redirect()->to('admin/data/loot-tables/edit/' . $table->id);
         } else {
             foreach ($service->errors()->getMessages()['error'] as $error) {
                 flash($error)->error();
@@ -121,7 +132,8 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getDeleteLootTable($id) {
+    public function getDeleteLootTable($id)
+    {
         $table = LootTable::find($id);
 
         return view('admin.loot_tables._delete_loot_table', [
@@ -137,7 +149,8 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postDeleteLootTable(Request $request, LootService $service, $id) {
+    public function postDeleteLootTable(Request $request, LootService $service, $id)
+    {
         if ($id && $service->deleteLootTable(LootTable::find($id))) {
             flash('Loot table deleted successfully.')->success();
         } else {
@@ -157,7 +170,8 @@ class LootTableController extends Controller {
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getRollLootTable(Request $request, LootService $service, $id) {
+    public function getRollLootTable(Request $request, LootService $service, $id)
+    {
         $table = LootTable::find($id);
         if (!$table) {
             abort(404);
@@ -171,8 +185,8 @@ class LootTableController extends Controller {
         }
 
         return view('admin.loot_tables._roll_loot_table', [
-            'table'    => $table,
-            'results'  => $results,
+            'table' => $table,
+            'results' => $results,
             'quantity' => $request->get('quantity'),
         ]);
     }
